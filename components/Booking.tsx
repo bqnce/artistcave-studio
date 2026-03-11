@@ -1,0 +1,250 @@
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Calendar01Icon, 
+  Clock01Icon, 
+  Scissor01Icon, 
+  UserIcon, 
+  SmartPhone01Icon 
+} from "hugeicons-react";
+
+// Ideiglenes szolgáltatás lista
+const services = [
+  { id: "hair", name: "Hajvágás", duration: "45p", price: "5 000 Ft" },
+  { id: "kid", name: "Gyermek hajvágás", duration: "40p", price: "4 000 Ft" },
+  { id: "beard", name: "Szakáll igazítás", duration: "20p", price: "3 500 Ft" },
+  { id: "combo", name: "Barber treatment", duration: "1ó", price: "8 000 Ft" },
+];
+
+// Ideiglenes következő 5 nap generálása (UI demonstráció)
+const upcomingDays = [
+  { id: "day1", day: "Ma", date: "Máj. 14." },
+  { id: "day2", day: "Holnap", date: "Máj. 15." },
+  { id: "day3", day: "Szerda", date: "Máj. 16." },
+  { id: "day4", day: "Csütörtök", date: "Máj. 17." },
+  { id: "day5", day: "Péntek", date: "Máj. 18." },
+];
+
+// 15 perces időpontok generálása (10:00 - 18:00)
+const generateTimeSlots = () => {
+  const slots: string[] = [];
+  for (let h = 10; h <= 17; h++) {
+    ["00", "15", "30", "45"].forEach((m) => slots.push(`${h}:${m}`));
+  }
+  return slots;
+};
+const timeSlots = generateTimeSlots();
+
+export default function Booking() {
+  // Állapotok (State) a foglaláshoz
+  const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+
+  // Segédfüggvény a kiválasztott szolgáltatás adatainak lekéréséhez
+  const activeServiceData = services.find((s) => s.id === selectedService);
+
+  return (
+    <section 
+      id="foglalas" 
+      className="relative min-h-screen w-full flex flex-col items-center justify-center bg-zinc-950 py-24 px-6 md:px-12 lg:px-24 border-t border-zinc-900"
+    >
+      <div className="relative z-10 w-full max-w-6xl mx-auto">
+        
+        {/* Fejléc */}
+        <div className="text-center mb-16">
+          <span className="text-zinc-500 uppercase tracking-[0.4em] font-light text-xs md:text-sm mb-3 inline-block">
+            Időpontfoglalás
+          </span>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tighter uppercase text-zinc-100 leading-tight">
+            Foglald le a <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-violet-400">Helyed</span>
+          </h2>
+        </div>
+
+        {/* Kétoszlopos elrendezés asztali nézetben */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+          
+          {/* BAL OSZLOP: A választási folyamat (Lépésről lépésre) */}
+          <div className="lg:col-span-7 flex flex-col gap-12">
+            
+            {/* 1. LÉPÉS: Szolgáltatás */}
+            <div className="flex flex-col gap-4">
+              <h3 className="text-lg font-medium text-zinc-200 uppercase tracking-widest flex items-center gap-2">
+                <Scissor01Icon size={20} className="text-purple-400" />
+                1. Szolgáltatás
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {services.map((service) => (
+                  <button
+                    key={service.id}
+                    onClick={() => {
+                      setSelectedService(service.id);
+                      setSelectedTime(null); // Új szolgáltatásnál nullázzuk az időt
+                    }}
+                    className={`flex flex-col text-left p-4 rounded-sm border transition-all duration-200 ${
+                      selectedService === service.id 
+                        ? "border-purple-500 bg-purple-500/10" 
+                        : "border-zinc-800 bg-zinc-900/30 hover:border-zinc-600"
+                    }`}
+                  >
+                    <span className={`font-semibold uppercase text-sm ${selectedService === service.id ? "text-purple-300" : "text-zinc-300"}`}>
+                      {service.name}
+                    </span>
+                    <div className="flex justify-between items-center mt-2 text-xs text-zinc-500 font-light">
+                      <span>{service.duration}</span>
+                      <span>{service.price}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 2. LÉPÉS: Dátum (Csak akkor aktív, ha van szolgáltatás) */}
+            <div className={`flex flex-col gap-4 transition-opacity duration-500 ${selectedService ? "opacity-100" : "opacity-30 pointer-events-none"}`}>
+              <h3 className="text-lg font-medium text-zinc-200 uppercase tracking-widest flex items-center gap-2">
+                <Calendar01Icon size={20} className={selectedService ? "text-purple-400" : "text-zinc-600"} />
+                2. Dátum
+              </h3>
+              <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                {upcomingDays.map((day) => (
+                  <button
+                    key={day.id}
+                    onClick={() => {
+                      setSelectedDate(day.id);
+                      setSelectedTime(null);
+                    }}
+                    className={`flex flex-col items-center justify-center min-w-[90px] p-3 rounded-sm border transition-all duration-200 ${
+                      selectedDate === day.id 
+                        ? "border-purple-500 bg-purple-500/10" 
+                        : "border-zinc-800 bg-zinc-900/30 hover:border-zinc-600"
+                    }`}
+                  >
+                    <span className={`text-xs uppercase tracking-widest mb-1 ${selectedDate === day.id ? "text-purple-300" : "text-zinc-500"}`}>
+                      {day.day}
+                    </span>
+                    <span className={`font-medium ${selectedDate === day.id ? "text-zinc-100" : "text-zinc-300"}`}>
+                      {day.date}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 3. LÉPÉS: Időpont (Csak akkor aktív, ha van dátum) */}
+            <div className={`flex flex-col gap-4 transition-opacity duration-500 ${selectedDate ? "opacity-100" : "opacity-30 pointer-events-none"}`}>
+              <h3 className="text-lg font-medium text-zinc-200 uppercase tracking-widest flex items-center gap-2">
+                <Clock01Icon size={20} className={selectedDate ? "text-purple-400" : "text-zinc-600"} />
+                3. Időpont (15 perces bontás)
+              </h3>
+              {/* Időpont rács */}
+              <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+                {timeSlots.map((time, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedTime(time)}
+                    className={`py-2 text-sm rounded-sm border transition-all duration-200 ${
+                      selectedTime === time
+                        ? "border-purple-500 bg-purple-500/10 text-purple-200 font-bold"
+                        : "border-zinc-800 bg-zinc-900/30 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
+                    }`}
+                  >
+                    {time}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+          </div>
+
+
+          {/* JOBB OSZLOP: Összegzés és Személyes adatok (Sticky) */}
+          <div className="lg:col-span-5 relative">
+            <div className="sticky top-32 bg-zinc-900/40 border border-zinc-800 p-8 rounded-sm backdrop-blur-sm flex flex-col gap-8">
+              
+              <h3 className="text-xl font-medium text-zinc-100 uppercase tracking-widest border-b border-zinc-800 pb-4">
+                Összegzés
+              </h3>
+
+              {/* Foglalás részletei */}
+              <div className="flex flex-col gap-4 text-sm font-light">
+                <div className="flex justify-between items-center">
+                  <span className="text-zinc-500">Szolgáltatás:</span>
+                  <span className="text-zinc-200 font-medium uppercase">
+                    {activeServiceData ? activeServiceData.name : "-"}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-zinc-500">Időpont:</span>
+                  <span className="text-zinc-200 font-medium uppercase">
+                    {selectedDate ? upcomingDays.find(d => d.id === selectedDate)?.date : "-"} {selectedTime ? selectedTime : ""}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center pt-4 border-t border-zinc-800/50">
+                  <span className="text-zinc-500">Fizetendő (helyszínen):</span>
+                  <span className="text-purple-300 font-bold text-lg">
+                    {activeServiceData ? activeServiceData.price : "-"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Űrlap adatok (Csak akkor aktív, ha van időpont) */}
+              <div className={`flex flex-col gap-6 mt-4 transition-opacity duration-500 ${selectedTime ? "opacity-100" : "opacity-30 pointer-events-none"}`}>
+                
+                {/* Név Input */}
+                <div className="relative">
+                  <UserIcon size={18} className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500" />
+                  <input 
+                    type="text" 
+                    placeholder="Teljes Neved"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full bg-transparent border-b border-zinc-700 py-3 pl-8 text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-purple-400 transition-colors"
+                  />
+                </div>
+
+                {/* Telefon Input */}
+                <div className="relative">
+                  <SmartPhone01Icon size={18} className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500" />
+                  <input 
+                    type="tel" 
+                    placeholder="Telefonszámod (+36...)"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full bg-transparent border-b border-zinc-700 py-3 pl-8 text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-purple-400 transition-colors"
+                  />
+                </div>
+
+                {/* Véglegesítés Gomb */}
+                <button 
+                  disabled={!name || !phone}
+                  className={`mt-4 py-4 rounded-sm text-sm font-bold uppercase tracking-widest transition-all duration-300 ${
+                    name && phone
+                      ? "bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-[0_0_20px_rgba(167,139,250,0.3)] hover:scale-[1.02] active:scale-95 cursor-pointer"
+                      : "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                  }`}
+                >
+                  Foglalás Véglegesítése
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Egyedi scrollbar stílus az időpont rácshoz (Globals.css-be is teheted később) */}
+      <style jsx>{`
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+      `}</style>
+    </section>
+  );
+}
