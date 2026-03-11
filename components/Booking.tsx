@@ -1,16 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { 
   Calendar01Icon, 
   Clock01Icon, 
   Scissor01Icon, 
   UserIcon, 
-  SmartPhone01Icon 
+  SmartPhone01Icon,
+  Mail01Icon,
+  Key01Icon
 } from "hugeicons-react";
 
-// Ideiglenes szolgáltatás lista
 const services = [
   { id: "hair", name: "Hajvágás", duration: "45p", price: "5 000 Ft" },
   { id: "kid", name: "Gyermek hajvágás", duration: "40p", price: "4 000 Ft" },
@@ -18,7 +19,6 @@ const services = [
   { id: "combo", name: "Barber treatment", duration: "1ó", price: "8 000 Ft" },
 ];
 
-// Ideiglenes következő 5 nap generálása (UI demonstráció)
 const upcomingDays = [
   { id: "day1", day: "Ma", date: "Máj. 14." },
   { id: "day2", day: "Holnap", date: "Máj. 15." },
@@ -27,7 +27,6 @@ const upcomingDays = [
   { id: "day5", day: "Péntek", date: "Máj. 18." },
 ];
 
-// 15 perces időpontok generálása (10:00 - 18:00)
 const generateTimeSlots = () => {
   const slots: string[] = [];
   for (let h = 10; h <= 17; h++) {
@@ -38,14 +37,21 @@ const generateTimeSlots = () => {
 const timeSlots = generateTimeSlots();
 
 export default function Booking() {
-  // Állapotok (State) a foglaláshoz
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  
+  // Új State a tabok kezeléséhez ("guest" vagy "login")
+  const [authMode, setAuthMode] = useState<"guest" | "login">("guest");
+  
+  // Vendég adatok
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  
+  // Bejelentkezés adatok
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  // Segédfüggvény a kiválasztott szolgáltatás adatainak lekéréséhez
   const activeServiceData = services.find((s) => s.id === selectedService);
 
   return (
@@ -65,13 +71,12 @@ export default function Booking() {
           </h2>
         </div>
 
-        {/* Kétoszlopos elrendezés asztali nézetben */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
           
-          {/* BAL OSZLOP: A választási folyamat (Lépésről lépésre) */}
+          {/* BAL OSZLOP: A választási folyamat */}
           <div className="lg:col-span-7 flex flex-col gap-12">
             
-            {/* 1. LÉPÉS: Szolgáltatás */}
+            {/* 1. Szolgáltatás */}
             <div className="flex flex-col gap-4">
               <h3 className="text-lg font-medium text-zinc-200 uppercase tracking-widest flex items-center gap-2">
                 <Scissor01Icon size={20} className="text-purple-400" />
@@ -83,7 +88,7 @@ export default function Booking() {
                     key={service.id}
                     onClick={() => {
                       setSelectedService(service.id);
-                      setSelectedTime(null); // Új szolgáltatásnál nullázzuk az időt
+                      setSelectedTime(null);
                     }}
                     className={`flex flex-col text-left p-4 rounded-sm border transition-all duration-200 ${
                       selectedService === service.id 
@@ -103,7 +108,7 @@ export default function Booking() {
               </div>
             </div>
 
-            {/* 2. LÉPÉS: Dátum (Csak akkor aktív, ha van szolgáltatás) */}
+            {/* 2. Dátum */}
             <div className={`flex flex-col gap-4 transition-opacity duration-500 ${selectedService ? "opacity-100" : "opacity-30 pointer-events-none"}`}>
               <h3 className="text-lg font-medium text-zinc-200 uppercase tracking-widest flex items-center gap-2">
                 <Calendar01Icon size={20} className={selectedService ? "text-purple-400" : "text-zinc-600"} />
@@ -134,13 +139,12 @@ export default function Booking() {
               </div>
             </div>
 
-            {/* 3. LÉPÉS: Időpont (Csak akkor aktív, ha van dátum) */}
+            {/* 3. Időpont */}
             <div className={`flex flex-col gap-4 transition-opacity duration-500 ${selectedDate ? "opacity-100" : "opacity-30 pointer-events-none"}`}>
               <h3 className="text-lg font-medium text-zinc-200 uppercase tracking-widest flex items-center gap-2">
                 <Clock01Icon size={20} className={selectedDate ? "text-purple-400" : "text-zinc-600"} />
                 3. Időpont (15 perces bontás)
               </h3>
-              {/* Időpont rács */}
               <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
                 {timeSlots.map((time, index) => (
                   <button
@@ -161,7 +165,7 @@ export default function Booking() {
           </div>
 
 
-          {/* JOBB OSZLOP: Összegzés és Személyes adatok (Sticky) */}
+          {/* JOBB OSZLOP: Összegzés és Adatfelvétel/Bejelentkezés */}
           <div className="lg:col-span-5 relative">
             <div className="sticky top-32 bg-zinc-900/40 border border-zinc-800 p-8 rounded-sm backdrop-blur-sm flex flex-col gap-8">
               
@@ -184,51 +188,121 @@ export default function Booking() {
                   </span>
                 </div>
                 <div className="flex justify-between items-center pt-4 border-t border-zinc-800/50">
-                  <span className="text-zinc-500">Fizetendő (helyszínen):</span>
+                  <span className="text-zinc-500">Fizetendő:</span>
                   <span className="text-purple-300 font-bold text-lg">
                     {activeServiceData ? activeServiceData.price : "-"}
                   </span>
                 </div>
               </div>
 
-              {/* Űrlap adatok (Csak akkor aktív, ha van időpont) */}
+              {/* TABS (Fülek) ÉS ŰRLAP (Csak akkor aktív, ha van időpont) */}
               <div className={`flex flex-col gap-6 mt-4 transition-opacity duration-500 ${selectedTime ? "opacity-100" : "opacity-30 pointer-events-none"}`}>
                 
-                {/* Név Input */}
-                <div className="relative">
-                  <UserIcon size={18} className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500" />
-                  <input 
-                    type="text" 
-                    placeholder="Teljes Neved"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-transparent border-b border-zinc-700 py-3 pl-8 text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-purple-400 transition-colors"
-                  />
+                {/* Fülek (Vendég / Bejelentkezés) */}
+                <div className="flex p-1 bg-zinc-950/50 border border-zinc-800 rounded-sm">
+                  <button
+                    onClick={() => setAuthMode("guest")}
+                    className={`flex-1 py-2 text-xs sm:text-sm font-medium uppercase tracking-wider transition-all duration-300 rounded-sm ${
+                      authMode === "guest" 
+                        ? "bg-zinc-800 text-zinc-100 shadow-sm" 
+                        : "text-zinc-500 hover:text-zinc-300"
+                    }`}
+                  >
+                    Vendégként
+                  </button>
+                  <button
+                    onClick={() => setAuthMode("login")}
+                    className={`flex-1 py-2 text-xs sm:text-sm font-medium uppercase tracking-wider transition-all duration-300 rounded-sm ${
+                      authMode === "login" 
+                        ? "bg-zinc-800 text-zinc-100 shadow-sm" 
+                        : "text-zinc-500 hover:text-zinc-300"
+                    }`}
+                  >
+                    Bejelentkezés
+                  </button>
                 </div>
 
-                {/* Telefon Input */}
-                <div className="relative">
-                  <SmartPhone01Icon size={18} className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500" />
-                  <input 
-                    type="tel" 
-                    placeholder="Telefonszámod (+36...)"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full bg-transparent border-b border-zinc-700 py-3 pl-8 text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-purple-400 transition-colors"
-                  />
-                </div>
+                {/* ŰRLAP: Vendég */}
+                {authMode === "guest" && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                    className="flex flex-col gap-6"
+                  >
+                    <div className="relative">
+                      <UserIcon size={18} className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500" />
+                      <input 
+                        type="text" 
+                        placeholder="Teljes Neved"
+                        value={name} onChange={(e) => setName(e.target.value)}
+                        className="w-full bg-transparent border-b border-zinc-700 py-3 pl-8 text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-purple-400 transition-colors"
+                      />
+                    </div>
+                    <div className="relative">
+                      <SmartPhone01Icon size={18} className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500" />
+                      <input 
+                        type="tel" 
+                        placeholder="Telefonszámod (+36...)"
+                        value={phone} onChange={(e) => setPhone(e.target.value)}
+                        className="w-full bg-transparent border-b border-zinc-700 py-3 pl-8 text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-purple-400 transition-colors"
+                      />
+                    </div>
+                    <button 
+                      disabled={!name || !phone}
+                      className={`mt-4 py-4 rounded-sm text-sm font-bold uppercase tracking-widest transition-all duration-300 ${
+                        name && phone
+                          ? "bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-[0_0_20px_rgba(167,139,250,0.3)] hover:scale-[1.02] active:scale-95 cursor-pointer"
+                          : "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                      }`}
+                    >
+                      Foglalás Véglegesítése
+                    </button>
+                  </motion.div>
+                )}
 
-                {/* Véglegesítés Gomb */}
-                <button 
-                  disabled={!name || !phone}
-                  className={`mt-4 py-4 rounded-sm text-sm font-bold uppercase tracking-widest transition-all duration-300 ${
-                    name && phone
-                      ? "bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-[0_0_20px_rgba(167,139,250,0.3)] hover:scale-[1.02] active:scale-95 cursor-pointer"
-                      : "bg-zinc-800 text-zinc-500 cursor-not-allowed"
-                  }`}
-                >
-                  Foglalás Véglegesítése
-                </button>
+                {/* ŰRLAP: Bejelentkezés */}
+                {authMode === "login" && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                    className="flex flex-col gap-6"
+                  >
+                    <div className="relative">
+                      <Mail01Icon size={18} className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500" />
+                      <input 
+                        type="email" 
+                        placeholder="E-mail címed"
+                        value={email} onChange={(e) => setEmail(e.target.value)}
+                        className="w-full bg-transparent border-b border-zinc-700 py-3 pl-8 text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-purple-400 transition-colors"
+                      />
+                    </div>
+                    <div className="relative">
+                      <Key01Icon size={18} className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500" />
+                      <input 
+                        type="password" 
+                        placeholder="Jelszó"
+                        value={password} onChange={(e) => setPassword(e.target.value)}
+                        className="w-full bg-transparent border-b border-zinc-700 py-3 pl-8 text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-purple-400 transition-colors"
+                      />
+                    </div>
+                    
+                    <button 
+                      disabled={!email || !password}
+                      className={`mt-4 py-4 rounded-sm text-sm font-bold uppercase tracking-widest transition-all duration-300 ${
+                        email && password
+                          ? "bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-[0_0_20px_rgba(167,139,250,0.3)] hover:scale-[1.02] active:scale-95 cursor-pointer"
+                          : "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                      }`}
+                    >
+                      Belépés & Foglalás
+                    </button>
+
+                    <div className="text-center mt-2">
+                      <a href="#" className="text-xs text-zinc-500 hover:text-purple-400 transition-colors">
+                        Nincs még fiókod? Regisztrálj itt.
+                      </a>
+                    </div>
+                  </motion.div>
+                )}
+
               </div>
 
             </div>
@@ -237,7 +311,6 @@ export default function Booking() {
         </div>
       </div>
 
-      {/* Egyedi scrollbar stílus az időpont rácshoz (Globals.css-be is teheted később) */}
       <style jsx>{`
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
