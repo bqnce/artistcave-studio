@@ -11,6 +11,7 @@ import {
   Mail01Icon,
   Key01Icon
 } from "hugeicons-react";
+import Link from "next/link";
 
 const services = [
   { id: "hair", name: "Hajvágás", duration: "45p", price: "5 000 Ft" },
@@ -226,32 +227,32 @@ export default function Booking() {
                 {authMode === "guest" && (
                   <motion.div 
                     initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                    className="flex flex-col gap-6"
+                    className="flex flex-col gap-5"
                   >
-                    <div className="relative">
-                      <UserIcon size={18} className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500" />
+                    <div className="relative group">
+                      <UserIcon size={20} className="absolute left-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none text-zinc-500 transition-colors duration-300 group-focus-within:text-purple-400" />
                       <input 
                         type="text" 
                         placeholder="Teljes Neved"
                         value={name} onChange={(e) => setName(e.target.value)}
-                        className="w-full bg-transparent border-b border-zinc-700 py-3 pl-8 text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-purple-400 transition-colors"
+                        className="w-full bg-zinc-950/50 border border-zinc-800 rounded-xl py-3.5 pl-12 pr-4 text-zinc-100 placeholder-zinc-600 backdrop-blur-sm focus:outline-none focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 transition-all duration-300"
                       />
                     </div>
-                    <div className="relative">
-                      <SmartPhone01Icon size={18} className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500" />
+                    <div className="relative group">
+                      <SmartPhone01Icon size={20} className="absolute left-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none text-zinc-500 transition-colors duration-300 group-focus-within:text-purple-400" />
                       <input 
                         type="tel" 
                         placeholder="Telefonszámod (+36...)"
                         value={phone} onChange={(e) => setPhone(e.target.value)}
-                        className="w-full bg-transparent border-b border-zinc-700 py-3 pl-8 text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-purple-400 transition-colors"
+                        className="w-full bg-zinc-950/50 border border-zinc-800 rounded-xl py-3.5 pl-12 pr-4 text-zinc-100 placeholder-zinc-600 backdrop-blur-sm focus:outline-none focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 transition-all duration-300"
                       />
                     </div>
                     <button 
                       disabled={!name || !phone}
-                      className={`mt-4 py-4 rounded-sm text-sm font-bold uppercase tracking-widest transition-all duration-300 ${
+                      className={`mt-4 py-4 rounded-xl text-sm font-bold uppercase tracking-widest transition-all duration-300 ${
                         name && phone
-                          ? "bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-[0_0_20px_rgba(167,139,250,0.3)] hover:scale-[1.02] active:scale-95 cursor-pointer"
-                          : "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                          ? "bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-[0_0_20px_rgba(167,139,250,0.2)] hover:shadow-[0_0_30px_rgba(167,139,250,0.4)] hover:scale-[1.02] active:scale-95 cursor-pointer"
+                          : "bg-zinc-950/50 border border-zinc-800 text-zinc-500 cursor-not-allowed"
                       }`}
                     >
                       Foglalás Véglegesítése
@@ -263,42 +264,42 @@ export default function Booking() {
                 {authMode === "login" && (
                   <motion.div 
                     initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                    className="flex flex-col gap-6"
+                    className="flex flex-col gap-5"
                   >
-                    <div className="relative">
-                      <Mail01Icon size={18} className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500" />
+                    <div className="relative group">
+                      <Mail01Icon size={20} className="absolute left-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none text-zinc-500 transition-colors duration-300 group-focus-within:text-purple-400" />
                       <input 
                         type="email" 
                         placeholder="E-mail címed"
                         value={email} onChange={(e) => setEmail(e.target.value)}
-                        className="w-full bg-transparent border-b border-zinc-700 py-3 pl-8 text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-purple-400 transition-colors"
+                        className="w-full bg-zinc-950/50 border border-zinc-800 rounded-xl py-3.5 pl-12 pr-4 text-zinc-100 placeholder-zinc-600 backdrop-blur-sm focus:outline-none focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 transition-all duration-300"
                       />
                     </div>
-                    <div className="relative">
-                      <Key01Icon size={18} className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-500" />
+                    <div className="relative group">
+                      <Key01Icon size={20} className="absolute left-4 top-1/2 -translate-y-1/2 z-10 pointer-events-none text-zinc-500 transition-colors duration-300 group-focus-within:text-purple-400" />
                       <input 
                         type="password" 
                         placeholder="Jelszó"
                         value={password} onChange={(e) => setPassword(e.target.value)}
-                        className="w-full bg-transparent border-b border-zinc-700 py-3 pl-8 text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-purple-400 transition-colors"
+                        className="w-full bg-zinc-950/50 border border-zinc-800 rounded-xl py-3.5 pl-12 pr-4 text-zinc-100 placeholder-zinc-600 backdrop-blur-sm focus:outline-none focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 transition-all duration-300"
                       />
                     </div>
                     
                     <button 
                       disabled={!email || !password}
-                      className={`mt-4 py-4 rounded-sm text-sm font-bold uppercase tracking-widest transition-all duration-300 ${
+                      className={`mt-4 py-4 rounded-xl text-sm font-bold uppercase tracking-widest transition-all duration-300 ${
                         email && password
-                          ? "bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-[0_0_20px_rgba(167,139,250,0.3)] hover:scale-[1.02] active:scale-95 cursor-pointer"
-                          : "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                          ? "bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-[0_0_20px_rgba(167,139,250,0.2)] hover:shadow-[0_0_30px_rgba(167,139,250,0.4)] hover:scale-[1.02] active:scale-95 cursor-pointer"
+                          : "bg-zinc-950/50 border border-zinc-800 text-zinc-500 cursor-not-allowed"
                       }`}
                     >
                       Belépés & Foglalás
                     </button>
 
                     <div className="text-center mt-2">
-                      <a href="#" className="text-xs text-zinc-500 hover:text-purple-400 transition-colors">
+                      <Link href="/register" className="text-xs text-zinc-500 hover:text-purple-400 transition-colors">
                         Nincs még fiókod? Regisztrálj itt.
-                      </a>
+                      </Link>
                     </div>
                   </motion.div>
                 )}

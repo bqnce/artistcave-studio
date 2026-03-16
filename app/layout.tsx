@@ -20,7 +20,6 @@ export default function RootLayout({
     <html lang="hu">
       {/* Itt cseréltük a class-t a sora.className-re */}
       <body className={sora.className}>
-        <Navbar />
         <main className="min-h-screen">
           {children}
         </main>
