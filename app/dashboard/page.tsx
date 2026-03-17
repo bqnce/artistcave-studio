@@ -2,7 +2,6 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import prisma from '@/lib/prisma' // BEHÚZZUK A PRISMÁT!
 import { 
   UserIcon, 
   Calendar01Icon, 
@@ -27,17 +26,6 @@ export default async function DashboardPage() {
 
   if (!user) redirect('/login')
 
-  // LEKÉRDEZZÜK A PRISMÁBÓL A SZEREPKÖRT!
-  const dbUser = await prisma.user.findUnique({
-    where: { email: user.email }
-  })
-
-  // HA A BORBÉLY LÉPETT BE, AZONNAL ÁTDOBJUK AZ ADMIN FELÜLETRE!
-  if (dbUser?.role === 'ADMIN') {
-    redirect('/admin')
-  }
-
-  // Next.js Server Action a biztonságos kijelentkezéshez
   const signOut = async () => {
     "use server"
     const cookieStore = await cookies()

@@ -7,20 +7,15 @@
     "dev:turbo": "next dev --turbopack",
     "dev:webpack": "next dev --webpack",
     "build": "next build",
-    "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "^7.5.0",
-    "@prisma/client": "^7.5.0",
     "@supabase/ssr": "^0.9.0",
     "@supabase/supabase-js": "^2.99.2",
-    "dotenv": "^17.3.1",
     "framer-motion": "^12.35.2",
     "hugeicons-react": "^0.4.0",
     "lucide-react": "^0.577.0",
     "next": "16.1.6",
-    "pg": "^8.20.0",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
@@ -31,7 +26,6 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
-    "prisma": "^7.5.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

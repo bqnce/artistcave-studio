@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/prisma/supabase"; // Supabase import a bejelentkezéshez
+import { supabase } from "@/lib/supabase";
 import { 
   Mail01Icon, 
   Key01Icon,

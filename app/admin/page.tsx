@@ -1,7 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import prisma from '@/lib/prisma'
 import { 
   Logout01Icon,
   Calendar01Icon,
@@ -24,16 +23,6 @@ export default async function AdminDashboard() {
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
-
-  // ELLENŐRIZZÜK, HOGY TÉNYLEG AZ ADMIN-E
-  const dbUser = await prisma.user.findUnique({
-    where: { email: user.email }
-  })
-
-  if (dbUser?.role !== 'ADMIN') {
-    // Ha egy sima vendég próbál ide bejutni az URL átírásával, kidobjuk!
-    redirect('/dashboard')
-  }
 
   const signOut = async () => {
     "use server"
