@@ -1,7 +1,7 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Only protect /dashboard for now (simple, explicit)
   const isDashboard = request.nextUrl.pathname.startsWith('/dashboard')
   if (!isDashboard) return NextResponse.next()
