@@ -20,42 +20,36 @@ enum Role {
 
 // Felhasználók (Vendégek és a Borbély)
 model User {
-  id            String        @id @default(uuid())
+  id            String        @id // <-- KIVETTÜK A @default(uuid()) RÉSZT!
   email         String        @unique
   name          String?
   phone         String?
   role          Role          @default(USER)
   createdAt     DateTime      @default(now())
   
-  // Kapcsolat: Egy felhasználónak több foglalása is lehet
   appointments  Appointment[] 
 }
 
-// Szolgáltatások (Hajvágás, Szakáll, stb.)
 model Service {
   id            String        @id @default(uuid())
   name          String
   description   String?
-  durationMins  Int           // Hány perces a szolgáltatás (pl. 45)
-  price         Int           // Ár (pl. 5000)
-  
-  // Kapcsolat: Egy szolgáltatáshoz több foglalás is tartozhat
+  durationMins  Int           
+  price         Int           
   appointments  Appointment[]
 }
 
-// Maga a Foglalás (FRISSÍTETT TERV)
 model Appointment {
   id            String   @id @default(uuid())
-  date          DateTime // A pontos nap és időpont
+  date          DateTime // Kezdés
+  endTime       DateTime // <-- ÚJ MEZŐ: Befejezés pontos ideje
   status        String   @default("PENDING") 
-  notes         String?  // + ÚJ: Megjegyzés (pl. "Csak ollóval kérném")
+  notes         String?
   createdAt     DateTime @default(now())
 
-  // + ÚJ: Vendég adatok (csak akkor töltjük ki, ha NEM bejelentkezve foglal)
   guestName     String?
   guestPhone    String?
 
-  // MÓDOSÍTOTT: A userId opcionális lett (kérdőjel), mert vendég is foglalhat!
   userId        String?  
   user          User?    @relation(fields: [userId], references: [id])
   
