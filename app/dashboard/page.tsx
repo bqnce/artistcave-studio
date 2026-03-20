@@ -2,8 +2,8 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
-import Link from 'next/link'
 import AdminDashboard from '@/components/AdminDashboard'
+import UserDashboard from '@/components/UserDashboard'
 
 export default async function DashboardPage() {
   const cookieStore = await cookies()
@@ -75,24 +75,10 @@ export default async function DashboardPage() {
 
   // 4. UI SZÉTVÁLASZTÁSA: VENDÉG NÉZET (USER)
   return (
-    <main className="min-h-screen bg-zinc-950 text-zinc-100 p-6 md:p-12 relative overflow-hidden">
-      <div className="max-w-4xl mx-auto relative z-10">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 border-b border-zinc-800 pb-6">
-          <div>
-            <span className="text-purple-500 font-bold tracking-widest uppercase text-xs mb-1 block">Saját Fiók</span>
-            <h1 className="text-3xl font-bold uppercase">Szia, <span className="text-purple-400">{dbUser.name || 'Vendég'}</span>!</h1>
-          </div>
-          <div className="flex items-center gap-4">
-             <Link href="/" className="text-sm font-medium uppercase tracking-widest text-zinc-500 hover:text-white transition-colors">Új Foglalás</Link>
-             <form action={signOut}>
-               <button type="submit" className="bg-zinc-900 text-zinc-400 border border-zinc-800 px-4 py-2 rounded-lg text-sm font-bold uppercase hover:bg-zinc-800 hover:text-white transition-colors">
-                 Kijelentkezés
-               </button>
-             </form>
-          </div>
-        </div>
-        <p className="text-zinc-400">Itt fogod látni a közelgő és korábbi hajvágásaidat.</p>
-      </div>
-    </main>
+    <UserDashboard 
+      userName={dbUser.name || ''} 
+      userEmail={dbUser.email || ''} 
+      userPhone={dbUser.phone || ''} 
+    />
   )
 }
