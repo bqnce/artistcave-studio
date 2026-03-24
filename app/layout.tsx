@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Sora } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/next"
+
 import "./globals.css";
 
 // Sora font beállítása
@@ -19,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="hu">
       <SpeedInsights />
-
+      <Analytics />
       {/* Itt cseréltük a class-t a sora.className-re */}
       <body className={sora.className}>
         <main className="min-h-screen">
