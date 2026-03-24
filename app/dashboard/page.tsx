@@ -2,8 +2,8 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
-import AdminDashboard from './AdminDashboard'
-import UserDashboard from './UserDashboard'
+import AdminDashboard from './admin/AdminDashboard'
+import UserDashboard from './user/UserDashboard'
 
 export default async function DashboardPage() {
   const cookieStore = await cookies()
@@ -102,9 +102,9 @@ export default async function DashboardPage() {
     }))
 
     return (
-      <AdminDashboard 
-        userName={dbUser.name || 'Főnök'} 
-        initialServices={services} 
+      <AdminDashboard
+        userName={dbUser.name || 'Főnök'}
+        initialServices={services}
         todayRevenue={todayRevenue}
         todayCount={todayCount}
         todayBookings={todayBookings}
@@ -145,10 +145,10 @@ export default async function DashboardPage() {
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
   return (
-    <UserDashboard 
-      userName={dbUser.name || ''} 
-      userEmail={dbUser.email || ''} 
-      userPhone={dbUser.phone || ''} 
+    <UserDashboard
+      userName={dbUser.name || ''}
+      userEmail={dbUser.email || ''}
+      userPhone={dbUser.phone || ''}
       upcomingBookings={upcomingBookings}
       pastBookings={pastBookings}
     />

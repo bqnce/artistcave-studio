@@ -15,7 +15,7 @@ export default async function Home() {
     select: { id: true, name: true, price: true, durationMins: true }
   })
 
-  // 2. LEKÉRJÜK A JÖVŐBELI FOGLALÁSOKAT (Ez az új rész!)
+  // 2. LEKÉRJÜK A JÖVŐBELI FOGLALÁSOKAT
   // Csak a mai naptól kezdődő, nem lemondott időpontokat húzzuk le
   const today = new Date()
   today.setHours(0, 0, 0, 0)
@@ -37,7 +37,7 @@ export default async function Home() {
     endTime: app.endTime.toISOString()
   }))
 
-  // 3. User ellenőrzése
+  // 3. User ellenőrzése Supabase-ből
   const cookieStore = await cookies()
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -50,6 +50,15 @@ export default async function Home() {
   )
   const { data: { user } } = await supabase.auth.getUser()
 
+  // 4. Adatbázis User lekérése a névhez és telefonszámhoz
+  let dbUser = null;
+  if (user) {
+    dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: { name: true, phone: true }
+    });
+  }
+
   return (
     <main className="min-h-screen bg-zinc-950 selection:bg-purple-500/30 text-zinc-100 font-sans">
       <Navbar />
@@ -57,8 +66,14 @@ export default async function Home() {
       <Services />
       <About />
       
-      {/* ITT ADJUK ÁT AZ FOGLALT SÁVOKAT IS (occupiedSlots) */}
-      <Booking services={services} userId={user?.id} occupiedSlots={occupiedSlots} />
+      {/* ITT ADJUK ÁT AZ FOGLALT SÁVOKAT ÉS A BEJELENTKEZETT USER ADATAIT */}
+      <Booking 
+        services={services} 
+        occupiedSlots={occupiedSlots} 
+        userId={user?.id} 
+        userName={dbUser?.name || undefined}
+        userPhone={dbUser?.phone || undefined}
+      />
       
       <Contact />
     </main>
