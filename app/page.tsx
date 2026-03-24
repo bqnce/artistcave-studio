@@ -58,10 +58,10 @@ async function BookingDataFetcher() {
   }
 
   return (
-    <Booking 
-      services={services} 
-      occupiedSlots={occupiedSlots} 
-      userId={user?.id} 
+    <Booking
+      services={services}
+      occupiedSlots={occupiedSlots}
+      userId={user?.id}
       userName={dbUser?.name || undefined}
       userPhone={dbUser?.phone || undefined}
     />
@@ -73,24 +73,24 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-zinc-950 selection:bg-purple-500/30 text-zinc-100 font-sans">
       <Navbar />
-      
+
       {/* A Hero azonnal megjelenik, nem vár a Supabase-re! */}
       <Hero />
       <Services />
       <About />
-      
+
       {/* A Booking szekciót körbevesszük egy Suspense-szel. 
           Amíg a szerver lekéri a usert és a foglalásokat, egy elegáns töltőképernyőt mutatunk, 
           de a weboldal többi része már rég használható! */}
       <Suspense fallback={
-        <div className="w-full h-screen flex flex-col items-center justify-center bg-zinc-950 border-t border-zinc-900">
+        <div className="w-full min-h-screen py-24 flex flex-col items-center justify-center bg-zinc-950 border-t border-zinc-900">
           <div className="w-10 h-10 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
           <p className="mt-4 text-zinc-500 font-bold uppercase tracking-widest text-xs">Foglalási rendszer betöltése...</p>
         </div>
       }>
         <BookingDataFetcher />
       </Suspense>
-      
+
       <Contact />
     </main>
   )

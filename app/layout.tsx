@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Sora } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
 
 // Sora font beállítása
-const sora = Sora({ subsets: ["latin"] });
+const sora = Sora({ subsets: ["latin"], display: 'swap', preload: true });
 
 export const metadata: Metadata = {
   title: "Artist Cave Studio | Prémium Barbershop",

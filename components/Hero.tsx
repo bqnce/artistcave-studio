@@ -36,7 +36,7 @@ export default function Hero() {
 
       {/* --- AZ ÍV (Atmospheric Light) INTEGRÁLÁSA --- */}
       <motion.div
-        initial={{ opacity: 1 }} // <-- KIVETTÜK A 0-T! Ne rejtsd el az LCP elemet!
+        initial={{ opacity: 1 }} // Szigorúan 1, nincs animált belépés a LCP elemre!
         animate={{ opacity: 1 }}
         className="absolute top-0 left-0 w-full h-[60%] z-0 pointer-events-none"
         style={{
@@ -45,11 +45,12 @@ export default function Hero() {
         }}
       >
         <Image
-          src={heroArch}
+          src={heroArch} // Bizonyosodj meg róla, hogy webp kiterjesztésű!
           alt="Artist Cave Studio Hangulatfény"
           fill
-          priority
-          sizes="100vw" // <-- ÚJ: Segít a Next.js-nek optimalizálni a méretet
+          priority={true} // <-- NE HAGYD LE!
+          quality={85} // <-- Kicsit lejjebb vesszük a minőséget a drasztikus méretcsökkenésért
+          sizes="100vw"
           className="object-cover object-top opacity-80 blur-[2px]"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-950/20 to-zinc-950"></div>
