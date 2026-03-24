@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { motion, Variants } from "framer-motion";
-import aboutImage from "@/public/szalon.jpg";
-import caveTexture from "@/public/cave-texture.jpg";
+import aboutImage from "@/public/szalon.webp";
+import caveTexture from "@/public/cave-texture.webp";
 // Hugeicons importálása a 3 értékhez
 import {
     Scissor01Icon,
@@ -52,7 +52,6 @@ export default function About() {
         >
 
             {/* --- AZ ÚJ SZEMCSÉS TEXTÚRA INTEGRÁLÁSA (Háttér) --- */}
-            {/* Ezt a public/cave-texture.png fájllal kell használni */}
             <div className="absolute inset-0 z-0 pointer-events-none opacity-10">
                 <Image
                     src={caveTexture} // Győződj meg róla, hogy a kép a public mappában van ezen a néven

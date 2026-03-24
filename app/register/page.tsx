@@ -67,12 +67,12 @@ export default function RegisterPage() {
                 <div className="absolute inset-0 bg-zinc-950/20 z-10 mix-blend-multiply"></div>
                 <div className="absolute inset-0 bg-gradient-to-tr from-purple-900/40 to-transparent z-10 mix-blend-overlay"></div>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/portfolio-placeholder.jpeg" alt="Artist Cave Vibe" className="absolute inset-0 w-full h-full object-cover" />
+                <img src="/portfolio-placeholder.webp" alt="Artist Cave Vibe" className="absolute inset-0 w-full h-full object-cover" />
             </div>
 
             {/* JOBB OLDAL: Regisztrációs Űrlap */}
             <div className="w-full lg:w-[50%] lg:absolute lg:right-0 h-full flex items-center justify-center p-6 sm:p-12 relative z-0">
-                <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: "url('/cave-texture.jpg')", backgroundSize: "cover", backgroundPosition: "center" }}></div>
+                <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: "url('/cave-texture.webp')", backgroundSize: "cover", backgroundPosition: "center" }}></div>
 
                 <div className="w-full max-w-md relative z-10 flex flex-col">
                     <Link href="/" className="flex items-center gap-2 text-zinc-500 hover:text-purple-400 transition-colors self-start mb-12 text-sm font-medium uppercase tracking-widest">

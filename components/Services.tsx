@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion, Variants } from "framer-motion";
-import servicesGlow from "@/public/services-glow.jpg";
+import servicesGlow from "@/public/services-glow.webp";
 
 const servicesData = [
   {

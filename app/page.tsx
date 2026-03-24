@@ -9,35 +9,10 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
 export default async function Home() {
-  // 1. Lekérjük az aktív szolgáltatásokat
-  const services = await prisma.service.findMany({
-    orderBy: { name: 'asc' },
-    select: { id: true, name: true, price: true, durationMins: true }
-  })
-
-  // 2. LEKÉRJÜK A JÖVŐBELI FOGLALÁSOKAT
-  // Csak a mai naptól kezdődő, nem lemondott időpontokat húzzuk le
   const today = new Date()
   today.setHours(0, 0, 0, 0)
-  
-  const rawAppointments = await prisma.appointment.findMany({
-    where: {
-      date: { gte: today },
-      status: { not: "CANCELLED" }
-    },
-    select: {
-      date: true,
-      endTime: true,
-    }
-  })
 
-  // Serializáljuk a dátumokat, hogy a Kliens Komponens hiba nélkül megkapja
-  const occupiedSlots = rawAppointments.map(app => ({
-    date: app.date.toISOString(),
-    endTime: app.endTime.toISOString()
-  }))
-
-  // 3. User ellenőrzése Supabase-ből
+  // Cookie-k és Supabase kliens inicializálása
   const cookieStore = await cookies()
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -48,9 +23,35 @@ export default async function Home() {
       },
     }
   )
-  const { data: { user } } = await supabase.auth.getUser()
 
-  // 4. Adatbázis User lekérése a névhez és telefonszámhoz
+  // 1. PÁRHUZAMOSÍTOTT LEKÉRDEZÉSEK (Ez adja a sebességet)
+  // Egyszerre indul a szolgáltatások, a foglalások és az auth lekérése
+  const [services, rawAppointments, { data: { user } }] = await Promise.all([
+    prisma.service.findMany({
+      orderBy: { name: 'asc' },
+      select: { id: true, name: true, price: true, durationMins: true }
+    }),
+    prisma.appointment.findMany({
+      where: {
+        date: { gte: today },
+        status: { not: "CANCELLED" }
+      },
+      select: {
+        date: true,
+        endTime: true,
+      }
+    }),
+    supabase.auth.getUser()
+  ]);
+
+  // Serializáljuk a dátumokat, hogy a Kliens Komponens hiba nélkül megkapja
+  const occupiedSlots = rawAppointments.map(app => ({
+    date: app.date.toISOString(),
+    endTime: app.endTime.toISOString()
+  }))
+
+  // 2. Adatbázis User lekérése
+  // (Ez csak akkor fut le, ha van user.id, tehát függ az előző lekérdezéstől)
   let dbUser = null;
   if (user) {
     dbUser = await prisma.user.findUnique({

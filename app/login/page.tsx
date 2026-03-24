@@ -55,7 +55,7 @@ export default function LoginPage() {
         <div className="absolute inset-0 bg-gradient-to-tr from-purple-900/40 to-transparent z-10 mix-blend-overlay"></div>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/portfolio-placeholder.jpeg"
+          src="/portfolio-placeholder.webp"
           alt="Artist Cave Vibe"
           className="absolute inset-0 w-full h-full object-cover"
         />
@@ -66,7 +66,7 @@ export default function LoginPage() {
         <div
           className="absolute inset-0 opacity-[0.05] pointer-events-none"
           style={{
-            backgroundImage: "url('/cave-texture.jpg')",
+            backgroundImage: "url('/cave-texture.webp')",
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}

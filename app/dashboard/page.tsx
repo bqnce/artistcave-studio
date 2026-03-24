@@ -101,6 +101,33 @@ export default async function DashboardPage() {
       price: app.service.price
     }))
 
+    // ÚJ: Vendégek és foglalásaik lekérése
+    const rawUsers = await prisma.user.findMany({
+      where: { role: 'USER' },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        appointments: {
+          orderBy: { date: 'desc' },
+          include: { service: true }
+        }
+      }
+    });
+
+    const usersWithBookings = rawUsers.map(u => ({
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      phone: u.phone,
+      createdAt: u.createdAt.toISOString(),
+      appointments: u.appointments.map(a => ({
+        id: a.id,
+        date: a.date.toISOString(),
+        status: a.status,
+        serviceName: a.service.name,
+        price: a.service.price
+      }))
+    }));
+
     return (
       <AdminDashboard
         userName={dbUser.name || 'Főnök'}
@@ -110,6 +137,7 @@ export default async function DashboardPage() {
         todayBookings={todayBookings}
         allUpcomingBookings={allUpcomingBookings}
         cancelledBookings={cancelledBookings}
+        users={usersWithBookings} // <-- EZT ADD HOZZÁ
       />
     )
   }

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, Variants } from "framer-motion";
 import { Mouse01Icon } from "hugeicons-react";
-import heroArch from "@/public/hero-arch.png";
+import heroArch from "@/public/hero-arch.webp";
 
 // Animációs variánsok a konténernek (staggered delay)
 const containerVariants: Variants = {
@@ -35,11 +35,9 @@ export default function Hero() {
     <section className="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden bg-zinc-950 px-6 pt-24">
 
       {/* --- AZ ÍV (Atmospheric Light) INTEGRÁLÁSA --- */}
-      {/* Ezt a részt a public/hero-arch.png fájllal kell használni */}
       <motion.div
-        initial={{ opacity: 0 }}
+        initial={{ opacity: 1 }} // <-- KIVETTÜK A 0-T! Ne rejtsd el az LCP elemet!
         animate={{ opacity: 1 }}
-        transition={{ duration: 1.5, delay: 0.2 }}
         className="absolute top-0 left-0 w-full h-[60%] z-0 pointer-events-none"
         style={{
           maskImage: 'linear-gradient(to bottom, black 40%, transparent 100%)',
@@ -47,13 +45,13 @@ export default function Hero() {
         }}
       >
         <Image
-          src={heroArch} // Győződj meg róla, hogy a kép a public mappában van ezen a néven
+          src={heroArch}
           alt="Artist Cave Studio Hangulatfény"
           fill
-          priority // Fontos, hogy ez töltődjön be először
-          className="object-cover object-top opacity-80 blur-[2px]" // Enyhe homályosítás a lágyabb hatásért
+          priority
+          sizes="100vw" // <-- ÚJ: Segít a Next.js-nek optimalizálni a méretet
+          className="object-cover object-top opacity-80 blur-[2px]"
         />
-        {/* Sötét gradient mask, hogy az ív alja finoman beleolvadjon a háttérbe */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-950/20 to-zinc-950"></div>
       </motion.div>
 
