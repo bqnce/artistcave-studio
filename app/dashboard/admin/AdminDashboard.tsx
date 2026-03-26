@@ -13,10 +13,12 @@ import BookingsTab from './components/BookingsTab'
 import ServicesTab from './components/ServicesTab'
 import ServiceModal from './components/ServiceModal'
 import BookingModal from './components/BookingModal'
+import SchedulesTab from './components/SchedulesTab'
+import TimeBlockModal from './components/TimeBlockModal'
 import GuestsTab from './components/GuestsTab'
 
 export default function AdminDashboard({
-  userName, initialServices, todayRevenue, todayCount, todayBookings, allUpcomingBookings, cancelledBookings, users // <-- users hozzáadva
+  userName, initialServices, todayRevenue, todayCount, todayBookings, allUpcomingBookings, cancelledBookings, users, timeBlocks
 }: AdminDashboardProps) {
   const [activeTab, setActiveTab] = useState<TabType>('overview')
   const [isCancelling, setIsCancelling] = useState<string | null>(null)
@@ -27,6 +29,9 @@ export default function AdminDashboard({
   // ÚJ STATE-EK A VENDÉGEKHEZ:
   const [selectedGuest, setSelectedGuest] = useState<UserData | null>(null);
   const [guestSearch, setGuestSearch] = useState("");
+
+  const [isTimeBlockModalOpen, setIsTimeBlockModalOpen] = useState(false)
+  const [selectedDateForBlock, setSelectedDateForBlock] = useState(new Date())
 
   async function handleCancelBooking(id: string) {
     if (!window.confirm("Biztosan lemondod a vendég időpontját? A hely azonnal felszabadul!")) return
@@ -46,7 +51,7 @@ export default function AdminDashboard({
       <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <main className="flex-1 flex flex-col h-screen overflow-y-auto relative pb-24 md:pb-0">
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: "url('/cave-texture.jpg')", backgroundSize: "cover" }}></div>
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: "url('/cave-texture.webp')", backgroundSize: "cover" }}></div>
         <AdminMobileHeader activeTab={activeTab} setActiveTab={setActiveTab} />
 
         <div className="p-6 md:p-10 lg:p-16 max-w-6xl w-full mx-auto relative z-10 flex-1">
@@ -69,10 +74,12 @@ export default function AdminDashboard({
             )}
 
             {activeTab === 'schedules' && (
-              <div>
-                <h2 className="text-xl md:text-2xl font-bold uppercase mb-6 flex items-center gap-3"><Clock className="text-red-500" /> Munkaidő</h2>
-                <div className="bg-zinc-900/40 border border-zinc-800 rounded-2xl p-8 text-center text-zinc-500 backdrop-blur-sm">Itt állíthatod be a munkaidődet.</div>
-              </div>
+              <SchedulesTab
+                timeBlocks={timeBlocks}
+                allUpcomingBookings={allUpcomingBookings}
+                onOpenBookingModal={() => setIsBookingModalOpen(true)}
+                onOpenTimeBlockModal={(date) => { setSelectedDateForBlock(date); setIsTimeBlockModalOpen(true); }}
+              />
             )}
 
           </motion.div>

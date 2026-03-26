@@ -44,6 +44,13 @@ export interface UserData {
   appointments: UserBooking[];
 }
 
+export interface TimeBlock {
+  id: string;
+  start: string;
+  end: string;
+  title: string;
+}
+
 export interface AdminDashboardProps {
   userName: string
   initialServices: Service[]
@@ -52,5 +59,6 @@ export interface AdminDashboardProps {
   todayBookings: TodayBooking[]
   allUpcomingBookings: UpcomingBooking[]
   cancelledBookings: UpcomingBooking[]
-  users: UserData[] // <-- ÚJ PROP
+  users: UserData[]
+  timeBlocks: TimeBlock[]
 }

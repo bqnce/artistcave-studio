@@ -32,3 +32,8 @@ export type Service = Prisma.ServiceModel
  * 
  */
 export type Appointment = Prisma.AppointmentModel
+/**
+ * Model TimeBlock
+ * 
+ */
+export type TimeBlock = Prisma.TimeBlockModel

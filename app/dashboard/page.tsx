@@ -131,6 +131,19 @@ export default async function DashboardPage() {
       }))
     }));
 
+    // ÚJ: Szabadságok és blokkolások lekérése
+    const timeBlocksRaw = await prisma.timeBlock.findMany({
+      where: { end: { gte: todayStart } },
+      orderBy: { start: 'asc' }
+    })
+
+    const timeBlocks = timeBlocksRaw.map(tb => ({
+      id: tb.id,
+      start: tb.start.toISOString(),
+      end: tb.end.toISOString(),
+      title: tb.title || 'Szabadság'
+    }))
+
     return (
       <AdminDashboard
         userName={dbUser.name || 'Főnök'}
@@ -140,7 +153,8 @@ export default async function DashboardPage() {
         todayBookings={todayBookings}
         allUpcomingBookings={allUpcomingBookings}
         cancelledBookings={cancelledBookings}
-        users={usersWithBookings} // <-- EZT ADD HOZZÁ
+        users={usersWithBookings}
+        timeBlocks={timeBlocks}
       />
     )
   }

@@ -56,3 +56,12 @@ model Appointment {
   serviceId     String
   service       Service  @relation(fields: [serviceId], references: [id])
 }
+
+// Időblokkolások (Szabadság, ebédszünet, egyéb teendők)
+model TimeBlock {
+  id        String   @id @default(uuid())
+  start     DateTime
+  end       DateTime
+  title     String?  // Opcionális: pl. "Ebédszünet", "Nyaralás"
+  createdAt DateTime @default(now())
+}

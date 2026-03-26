@@ -11,4 +11,5 @@
 export type * from './models/User'
 export type * from './models/Service'
 export type * from './models/Appointment'
+export type * from './models/TimeBlock'
 export type * from './commonInputTypes'

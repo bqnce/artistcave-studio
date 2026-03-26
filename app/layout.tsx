@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
-import { Sora } from "next/font/google";
+import { Sora, Inter } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
 
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+
 
 // Sora font beállítása
 const sora = Sora({ subsets: ["latin"], display: 'swap', preload: true });
@@ -19,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="hu">
+    <html lang="hu" className={cn("font-sans", inter.variable)}>
       <SpeedInsights />
       <Analytics />
       {/* Itt cseréltük a class-t a sora.className-re */}

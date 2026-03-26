@@ -53,7 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Service: 'Service',
-  Appointment: 'Appointment'
+  Appointment: 'Appointment',
+  TimeBlock: 'TimeBlock'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -109,6 +110,17 @@ export const AppointmentScalarFieldEnum = {
 } as const
 
 export type AppointmentScalarFieldEnum = (typeof AppointmentScalarFieldEnum)[keyof typeof AppointmentScalarFieldEnum]
+
+
+export const TimeBlockScalarFieldEnum = {
+  id: 'id',
+  start: 'start',
+  end: 'end',
+  title: 'title',
+  createdAt: 'createdAt'
+} as const
+
+export type TimeBlockScalarFieldEnum = (typeof TimeBlockScalarFieldEnum)[keyof typeof TimeBlockScalarFieldEnum]
 
 
 export const SortOrder = {
