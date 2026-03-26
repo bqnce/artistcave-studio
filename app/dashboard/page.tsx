@@ -76,7 +76,8 @@ export default async function DashboardPage() {
 
     const todayBookings = todayBookingsRaw.map(app => ({
       id: app.id,
-      time: app.date.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' }),
+      // ÚJ: Kőkeményen megmondjuk, hogy Budapesti időt kérünk
+      time: app.date.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Budapest' }),
       guestName: app.user?.name || app.guestName || 'Ismeretlen',
       guestPhone: app.user?.phone || app.guestPhone || '-',
       serviceName: app.service.name,
@@ -86,7 +87,8 @@ export default async function DashboardPage() {
     const allUpcomingBookings = upcomingBookingsRaw.map(app => ({
       id: app.id,
       date: app.date.toISOString(),
-      time: app.date.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' }),
+      // ÚJ: Itt is fixáljuk a zónát
+      time: app.date.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Budapest' }),
       guestName: app.user?.name || app.guestName || 'Ismeretlen',
       serviceName: app.service.name,
       price: app.service.price
@@ -95,7 +97,8 @@ export default async function DashboardPage() {
     const cancelledBookings = cancelledBookingsRaw.map(app => ({
       id: app.id,
       date: app.date.toISOString(),
-      time: app.date.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' }),
+      // ÚJ: És itt is
+      time: app.date.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Budapest' }),
       guestName: app.user?.name || app.guestName || 'Ismeretlen',
       serviceName: app.service.name,
       price: app.service.price
