@@ -11,6 +11,7 @@ export async function createBooking(formData: FormData) {
     const guestPhone = formData.get('guestPhone') as string | null
     const userId = formData.get('userId') as string | null
     const notes = formData.get('notes') as string | null
+    const guestEmail = formData.get('guestEmail') as string | null
 
     // 1. Alap validáció
     if (!serviceId || !dateString) {
@@ -60,17 +61,32 @@ export async function createBooking(formData: FormData) {
       return { success: false, error: "Ez az időpont sajnos már foglalt, vagy belelóg egy másik foglalásba. Kérlek válassz másikat!" }
     }
 
+    const conflictingBlock = await prisma.timeBlock.findFirst({
+      where: {
+        OR: [
+          { start: { lte: date }, end: { gt: date } },
+          { start: { lt: endTime }, end: { gte: endTime } },
+          { start: { gte: date }, end: { lte: endTime } }
+        ]
+      }
+    })
+    
+    if (conflictingBlock) {
+      return { success: false, error: `Ez az időszak blokkolva van: „${conflictingBlock.title}". Kérlek válassz másik időpontot!` }
+    }
+
     // 4. Foglalás mentése, ha a sáv tiszta
     await prisma.appointment.create({
       data: {
         date,
         endTime,
         serviceId,
-        userId: userId || null, // Ha be van jelentkezve a user, ide kerül az ID-ja
-        guestName,              // Ha nincs bejelentkezve, akkor a beírt név
+        userId: userId || null,
+        guestName,
         guestPhone,
+        guestEmail,   // ÚJ
         notes,
-        status: "CONFIRMED"     // Alapból megerősítettként mentjük
+        status: "CONFIRMED"
       }
     })
 
@@ -100,3 +116,4 @@ export async function cancelBooking(bookingId: string) {
     return { success: false, error: "Nem sikerült lemondani az időpontot." }
   }
 }
+

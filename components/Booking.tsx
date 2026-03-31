@@ -2,10 +2,10 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Scissor01Icon, 
-  Calendar01Icon, 
-  UserCircleIcon, 
+import {
+  Scissor01Icon,
+  Calendar01Icon,
+  UserCircleIcon,
   ArrowRight01Icon,
   ArrowLeft01Icon,
   CheckmarkCircle02Icon
@@ -30,18 +30,20 @@ interface Props {
   userId?: string;
   userName?: string;
   userPhone?: string;
+  userEmail?: string;
 }
 
-export default function Booking({ services, occupiedSlots, timeBlocks = [], userId, userName, userPhone }: Props) {
+export default function Booking({ services, occupiedSlots, timeBlocks = [], userId, userName, userPhone, userEmail }: Props) {
   const router = useRouter();
-  
+
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  
+
   const [guestName, setGuestName] = useState(userName || "");
   const [guestPhone, setGuestPhone] = useState(userPhone || "");
+  const [guestEmail, setGuestEmail] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -64,7 +66,7 @@ export default function Booking({ services, occupiedSlots, timeBlocks = [], user
     if (!selectedService) return [];
     const times: string[] = [];
     const now = new Date();
-    
+
     // Napi beosztás: 10:00 - 19:00 (hétköznap), 10:00 - 14:00 (szombat)
     const isSaturday = selectedDate.getDay() === 6;
     const isSunday = selectedDate.getDay() === 0;
@@ -74,10 +76,10 @@ export default function Booking({ services, occupiedSlots, timeBlocks = [], user
     const endHour = isSaturday ? 14 : 19;
 
     for (let h = startHour; h < endHour; h++) {
-      for (let m = 0; m < 60; m += 15) { 
+      for (let m = 0; m < 60; m += 15) {
         const slotStart = new Date(selectedDate);
         slotStart.setHours(h, m, 0, 0);
-        
+
         const slotEnd = new Date(slotStart.getTime() + selectedService.durationMins * 60000);
 
         if (slotStart <= new Date(now.getTime() + 60 * 60000)) continue;
@@ -117,7 +119,7 @@ export default function Booking({ services, occupiedSlots, timeBlocks = [], user
     setIsLoggingIn(true);
     setLoginError(null);
     const supabase = createClient();
-    
+
     const { error } = await supabase.auth.signInWithPassword({
       email: loginEmail,
       password: loginPassword,
@@ -136,18 +138,21 @@ export default function Booking({ services, occupiedSlots, timeBlocks = [], user
   async function handleBook() {
     if (!selectedService || !selectedTime) return;
     if (!userId && (!guestName || !guestPhone)) return;
-    
+
     setIsSubmitting(true);
     setError(null);
 
     const formData = new FormData();
     formData.append('serviceId', selectedService.id);
-    const dateStr = selectedDate.toISOString().split('T')[0];
+    const pad = (n: number) => String(n).padStart(2, '0')
+    const dateStr = `${selectedDate.getFullYear()}-${pad(selectedDate.getMonth() + 1)}-${pad(selectedDate.getDate())}`
     formData.append('date', `${dateStr}T${selectedTime}`);
-    
+
     // JAVÍTÁS 2: Szigorúan mindig elküldjük a nevet és a telefont az adatbázisnak, függetlenül a státusztól!
     formData.append('guestName', guestName || userName || 'Ismeretlen');
     formData.append('guestPhone', guestPhone || userPhone || '');
+    formData.append('guestEmail', guestEmail || userEmail || '');
+
 
     const res = await createBooking(formData);
     if (res.success) {
@@ -178,7 +183,7 @@ export default function Booking({ services, occupiedSlots, timeBlocks = [], user
   return (
     <section id="foglalas" className="min-h-screen py-24 px-6 md:px-12 bg-zinc-950 border-t border-zinc-900 relative">
       <div className="max-w-4xl mx-auto">
-        
+
         {/* WIZARD FEJLÉC */}
         <div className="mb-12 text-center">
           <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter mb-6">Időpontfoglalás</h2>
@@ -194,15 +199,15 @@ export default function Booking({ services, occupiedSlots, timeBlocks = [], user
         {/* WIZARD TARTALOM */}
         <div className="bg-zinc-950/50 border border-zinc-800/80 rounded-[2rem] p-6 md:p-10 shadow-2xl relative overflow-hidden">
           <AnimatePresence mode="wait">
-            
+
             {/* 1. LÉPÉS: SZOLGÁLTATÁS */}
             {step === 1 && (
               <motion.div key="step1" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="flex flex-col gap-4">
                 <h3 className="text-sm font-black text-zinc-500 uppercase tracking-widest mb-4">Válassz szolgáltatást</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {services.map(service => (
-                    <div 
-                      key={service.id} 
+                    <div
+                      key={service.id}
                       onClick={() => { setSelectedService(service); setStep(2); }}
                       className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-violet-500/40 rounded-2xl p-6 cursor-pointer transition-all group flex flex-col justify-between min-h-[140px]"
                     >
@@ -233,8 +238,8 @@ export default function Booking({ services, occupiedSlots, timeBlocks = [], user
                   {dates.map((d, i) => {
                     const isSelected = d.toDateString() === selectedDate.toDateString();
                     return (
-                      <button 
-                        key={i} 
+                      <button
+                        key={i}
                         onClick={() => { setSelectedDate(d); setSelectedTime(null); }}
                         className={`flex-shrink-0 flex flex-col items-center justify-center w-20 h-24 rounded-2xl border transition-all ${isSelected ? 'bg-violet-600 border-violet-500 shadow-[0_0_15px_rgba(139,92,246,0.3)]' : 'bg-zinc-900 border-zinc-800 hover:bg-zinc-800'}`}
                       >
@@ -254,8 +259,8 @@ export default function Booking({ services, occupiedSlots, timeBlocks = [], user
                 ) : (
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
                     {availableTimes.map(time => (
-                      <button 
-                        key={time} 
+                      <button
+                        key={time}
                         onClick={() => setSelectedTime(time)}
                         className={`py-3 rounded-xl font-bold text-sm transition-all border ${selectedTime === time ? 'bg-violet-600 text-white border-violet-500 shadow-lg' : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:border-zinc-600'}`}
                       >
@@ -266,8 +271,8 @@ export default function Booking({ services, occupiedSlots, timeBlocks = [], user
                 )}
 
                 <div className="mt-8 flex justify-end">
-                  <button 
-                    onClick={() => setStep(3)} 
+                  <button
+                    onClick={() => setStep(3)}
                     disabled={!selectedTime}
                     className="bg-zinc-100 text-zinc-950 px-8 py-4 rounded-xl font-black uppercase tracking-widest hover:bg-white transition-colors disabled:opacity-20 flex items-center gap-2"
                   >
@@ -307,14 +312,14 @@ export default function Booking({ services, occupiedSlots, timeBlocks = [], user
                             <h4 className="text-sm font-bold text-white flex items-center gap-2"><UserCircleIcon size={18} className="text-violet-300" /> Bejelentkezés</h4>
                             <button onClick={() => setShowLogin(false)} className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest hover:text-white transition-colors">Vissza</button>
                           </div>
-                          
+
                           {loginError && <div className="p-3 bg-red-500/10 border border-red-500/30 text-red-500 text-xs rounded-xl font-bold uppercase tracking-widest text-center">{loginError}</div>}
-                          
+
                           <input type="email" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} placeholder="E-mail cím" className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-5 py-3.5 text-white font-medium focus:border-violet-500 focus:outline-none transition-colors" />
                           <input type="password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} placeholder="Jelszó" className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-5 py-3.5 text-white font-medium focus:border-violet-500 focus:outline-none transition-colors" />
-                          
-                          <button 
-                            onClick={handleLogin} 
+
+                          <button
+                            onClick={handleLogin}
                             disabled={isLoggingIn || !loginEmail || !loginPassword}
                             className="w-full mt-2 bg-violet-600 text-white px-6 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-violet-500 transition-all disabled:opacity-50"
                           >
@@ -353,6 +358,10 @@ export default function Booking({ services, occupiedSlots, timeBlocks = [], user
                             <input type="text" value={guestName} onChange={e => setGuestName(e.target.value)} placeholder="pl. Kovács János" className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-5 py-4 text-white font-medium focus:border-violet-500 focus:outline-none transition-colors" />
                           </div>
                           <div>
+                            <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest block mb-2">E-mail címed</label>
+                            <input type="email" value={guestEmail} onChange={e => setGuestEmail(e.target.value)} placeholder="pl. kovacs.janos@gmail.com" className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-5 py-4 text-white font-medium focus:border-violet-500 focus:outline-none transition-colors" />
+                          </div>
+                          <div>
                             <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest block mb-2">Telefonszámod</label>
                             <input type="tel" value={guestPhone} onChange={e => setGuestPhone(e.target.value)} placeholder="+36 30 123 4567" className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-5 py-4 text-white font-medium focus:border-violet-500 focus:outline-none transition-colors" />
                           </div>
@@ -372,9 +381,9 @@ export default function Booking({ services, occupiedSlots, timeBlocks = [], user
                   </div>
                 )}
 
-                <button 
-                  onClick={handleBook} 
-                  disabled={isSubmitting || (!userId && (!guestName || !guestPhone))}
+                <button
+                  onClick={handleBook}
+                  disabled={isSubmitting || (!userId && (!guestName || !guestPhone || !guestEmail))}
                   className="w-full bg-violet-600 text-white px-8 py-5 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-violet-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed drop-shadow-[0_0_20px_rgba(139,92,246,0.4)]"
                 >
                   {isSubmitting ? 'Feldolgozás...' : 'Foglalás Véglegesítése'}

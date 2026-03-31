@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Calendar, Scissors, Clock, User as UserIcon, Phone, X, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Calendar, Scissors, Clock, User as UserIcon, Phone, X, CheckCircle2, ChevronLeft, ChevronRight, Mail } from 'lucide-react'
 import { createBooking } from '@/app/actions/bookings'
 import { Service, UpcomingBooking } from '../types'
 
@@ -32,6 +32,7 @@ export default function BookingModal({ onClose, services, allUpcomingBookings }:
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [guestName, setGuestName] = useState("")
   const [guestPhone, setGuestPhone] = useState("")
+  const [guestEmail, setGuestEmail] = useState("")
   const [isBookingSubmitting, setIsBookingSubmitting] = useState(false)
   const [bookingMessage, setBookingMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
 
@@ -113,10 +114,11 @@ export default function BookingModal({ onClose, services, allUpcomingBookings }:
 
     const formData = new FormData();
     formData.append('serviceId', selectedService);
-    const combinedDateTime = new Date(`${selectedDate}T${selectedTime}`);
-    formData.append('date', combinedDateTime.toISOString());
+    formData.append('date', `${selectedDate}T${selectedTime}`);
     formData.append('guestName', guestName);
     formData.append('guestPhone', guestPhone);
+    formData.append('guestEmail', guestEmail);
+
 
     const res = await createBooking(formData);
     setIsBookingSubmitting(false);
@@ -128,6 +130,7 @@ export default function BookingModal({ onClose, services, allUpcomingBookings }:
       setSelectedTime(null);
       setGuestName("");
       setGuestPhone("");
+      setGuestEmail("")
       setTimeout(onClose, 2000);
     } else {
       setBookingMessage({ type: 'error', text: res.error || 'Hiba történt a foglalás során.' });
@@ -302,6 +305,12 @@ export default function BookingModal({ onClose, services, allUpcomingBookings }:
                   <div className="relative group">
                     <UserIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-zinc-500 group-focus-within:text-red-400 transition-colors" />
                     <input type="text" placeholder="Vendég neve" value={guestName} onChange={(e) => setGuestName(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl py-3.5 pl-11 pr-4 text-sm text-zinc-100 focus:outline-none focus:border-red-500 transition-colors" />
+                  </div>
+
+                  {/* ÚJ */}
+                  <div className="relative group">
+                    <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-zinc-500 group-focus-within:text-red-400 transition-colors" />
+                    <input type="email" placeholder="E-mail cím" value={guestEmail} onChange={(e) => setGuestEmail(e.target.value)} className="w-full bg-zinc-950 border border-zinc-800 rounded-xl py-3.5 pl-11 pr-4 text-sm text-zinc-100 focus:outline-none focus:border-red-500 transition-colors" />
                   </div>
 
                   <div className="relative group">

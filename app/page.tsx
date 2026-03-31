@@ -63,7 +63,7 @@ async function BookingDataFetcher() {
   if (user) {
     dbUser = await prisma.user.findUnique({
       where: { id: user.id },
-      select: { name: true, phone: true }
+      select: { name: true, phone: true, email: true }
     });
   }
 
@@ -75,6 +75,7 @@ async function BookingDataFetcher() {
       userId={user?.id}
       userName={dbUser?.name || undefined}
       userPhone={dbUser?.phone || undefined}
+      userEmail={dbUser?.email || undefined}
     />
   )
 }

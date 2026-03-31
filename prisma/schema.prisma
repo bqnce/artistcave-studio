@@ -49,6 +49,7 @@ model Appointment {
 
   guestName     String?
   guestPhone    String?
+  guestEmail    String?
 
   userId        String?  
   user          User?    @relation(fields: [userId], references: [id])

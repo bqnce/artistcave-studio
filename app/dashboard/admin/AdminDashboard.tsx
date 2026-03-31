@@ -180,8 +180,14 @@ export default function AdminDashboard({
             allUpcomingBookings={allUpcomingBookings}
           />
         )}
+        {isTimeBlockModalOpen && (
+          <TimeBlockModal
+            onClose={() => setIsTimeBlockModalOpen(false)}
+            selectedDate={selectedDateForBlock}
+          />
+        )}
       </AnimatePresence>
-
+      
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
