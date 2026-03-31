@@ -6,7 +6,7 @@ import { cancelBooking } from '@/app/actions/bookings'
 import { deleteService } from '@/app/actions/services'
 import { Users, Clock, X } from 'lucide-react'
 
-import { AdminDashboardProps, TabType, UserData } from './types'
+import { AdminDashboardProps, Service, TabType, UserData } from './types'
 import { AdminSidebar, AdminMobileHeader, AdminMobileNav } from './components/Navigation'
 import OverviewTab from './components/OverviewTab'
 import BookingsTab from './components/BookingsTab'
@@ -32,6 +32,9 @@ export default function AdminDashboard({
 
   const [isTimeBlockModalOpen, setIsTimeBlockModalOpen] = useState(false)
   const [selectedDateForBlock, setSelectedDateForBlock] = useState(new Date())
+
+  const [editingService, setEditingService] = useState<Service | null>(null)
+  const [isDeletingService, setIsDeletingService] = useState<string | null>(null)
 
   async function handleCancelBooking(id: string) {
     if (!window.confirm("Biztosan lemondod a vendég időpontját? A hely azonnal felszabadul!")) return
@@ -66,7 +69,13 @@ export default function AdminDashboard({
             )}
 
             {activeTab === 'services' && (
-              <ServicesTab services={initialServices} onDeleteService={handleDeleteService} onOpenServiceModal={() => setIsServiceModalOpen(true)} />
+              <ServicesTab
+                services={initialServices}
+                onOpenModal={() => { setEditingService(null); setIsServiceModalOpen(true); }}
+                onEditService={(service) => { setEditingService(service); setIsServiceModalOpen(true); }}
+                onDelete={handleDeleteService}
+                isDeleting={isDeletingService}
+              />
             )}
 
             {activeTab === 'guests' && (
@@ -158,7 +167,12 @@ export default function AdminDashboard({
       )}
 
       <AnimatePresence>
-        {isServiceModalOpen && <ServiceModal onClose={() => setIsServiceModalOpen(false)} />}
+        {isServiceModalOpen && (
+          <ServiceModal
+            onClose={() => { setIsServiceModalOpen(false); setEditingService(null); }}
+            serviceToEdit={editingService || undefined}
+          />
+        )}
         {isBookingModalOpen && (
           <BookingModal
             onClose={() => setIsBookingModalOpen(false)}

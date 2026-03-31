@@ -132,3 +132,67 @@
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
 }
+
+
+/* FullCalendar Dark Mode & Brand Overrides */
+.fc {
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: #18181b; /* zinc-900 */
+  --fc-neutral-text-color: #a1a1aa; /* zinc-400 */
+  --fc-border-color: #27272a; /* zinc-800 */
+  --fc-button-text-color: #fff;
+  --fc-button-bg-color: #18181b; /* zinc-900 */
+  --fc-button-border-color: #27272a; /* zinc-800 */
+  --fc-button-hover-bg-color: #27272a; /* zinc-800 */
+  --fc-button-hover-border-color: #3f3f46; /* zinc-700 */
+  --fc-button-active-bg-color: #dc2626; /* red-600 */
+  --fc-button-active-border-color: #b91c1c; /* red-700 */
+  --fc-event-bg-color: #27272a; /* zinc-800 */
+  --fc-event-border-color: #3f3f46; /* zinc-700 */
+  --fc-event-text-color: #fff;
+  --fc-today-bg-color: rgba(239, 68, 68, 0.05); /* red-500/5 */
+  --fc-now-indicator-color: #ef4444; /* red-500 */
+}
+
+.fc-theme-standard th {
+  padding: 8px 0;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: #a1a1aa;
+}
+
+/* Event kártyák finomítása */
+.fc-v-event {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  padding: 2px 4px;
+}
+
+/* EGYEDI SCROLLBAR (Dátumválasztóhoz és egyéb horizontális/vertikális görgetésekhez) */
+.custom-scrollbar {
+  scrollbar-width: thin; /* Firefox támogatás */
+  scrollbar-color: #3f3f46 transparent; /* Firefox: thumb és track színe */
+}
+
+/* Chrome, Edge, Safari */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px; /* Vízszintes görgetősáv vastagsága */
+  width: 6px;  /* Függőleges görgetősáv vastagsága (ha van) */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* A sín legyen átlátszó, hogy beleolvadjon a háttérbe */
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #3f3f46; /* zinc-700 (Sötétszürke, nem tolakodó) */
+  border-radius: 10px;
+  border: 2px solid transparent; /* Kicsi trükk a finomabb megjelenésért */
+  background-clip: padding-box;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #8b5cf6; /* violet-500 (Görgetés közben felveszi a brand színét) */
+}

@@ -53,12 +53,33 @@ export async function deleteService(id: string) {
     await prisma.service.delete({
       where: { id }
     })
-    
     revalidatePath('/dashboard')
+    revalidatePath('/')
     return { success: true }
   } catch (error) {
-    console.error("Hiba a törlésnél:", error)
-    // Ha már van egy foglalás, ami ehhez a szolgáltatáshoz kötődik, a reláció miatt nem törölhető csak úgy.
-    return { success: false, error: "Nem sikerült törölni. Lehet, hogy már tartozik hozzá aktív foglalás." }
+    console.error(error)
+    return { success: false, error: 'Hiba a szolgáltatás törlésénél.' }
   }
 }
+
+export async function updateService(id: string, formData: FormData) {
+  try {
+    const name = formData.get('name') as string
+    const durationMins = parseInt(formData.get('durationMins') as string)
+    const price = parseInt(formData.get('price') as string)
+    const description = formData.get('description') as string
+
+    await prisma.service.update({
+      where: { id },
+      data: { name, durationMins, price, description }
+    })
+
+    revalidatePath('/dashboard')
+    revalidatePath('/')
+    return { success: true }
+  } catch (error) {
+    console.error(error)
+    return { success: false, error: 'Hiba a szolgáltatás módosításánál.' }
+  }
+}
+

@@ -10,7 +10,6 @@ import { cookies } from 'next/headers'
 import { Suspense } from 'react'
 
 // --- 1. LASSÚ ADATKÉRŐ KOMPONENS ---
-// Ezt kiszerveztük ide, hogy ne blokkolja a főoldal azonnali betöltését!
 async function BookingDataFetcher() {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
@@ -26,7 +25,8 @@ async function BookingDataFetcher() {
     }
   )
 
-  const [services, rawAppointments, { data: { user } }] = await Promise.all([
+  // ÚJ: A Promise.all-ba bekerült a timeBlock (szabadságok) lekérdezés is!
+  const [services, rawAppointments, rawTimeBlocks, { data: { user } }] = await Promise.all([
     prisma.service.findMany({
       orderBy: { name: 'asc' },
       select: { id: true, name: true, price: true, durationMins: true }
@@ -41,12 +41,22 @@ async function BookingDataFetcher() {
         endTime: true,
       }
     }),
+    // SZABADSÁGOK LEKÉRÉSE AZ ADATBÁZISBÓL
+    prisma.timeBlock.findMany({
+      where: { end: { gte: today } }
+    }),
     supabase.auth.getUser()
   ]);
 
   const occupiedSlots = rawAppointments.map(app => ({
     date: app.date.toISOString(),
     endTime: app.endTime.toISOString()
+  }))
+
+  // ÚJ: Szabadságok/blokkok serializálása a kliens számára
+  const timeBlocks = rawTimeBlocks.map(block => ({
+    start: block.start.toISOString(),
+    end: block.end.toISOString()
   }))
 
   let dbUser = null;
@@ -61,6 +71,7 @@ async function BookingDataFetcher() {
     <Booking
       services={services}
       occupiedSlots={occupiedSlots}
+      timeBlocks={timeBlocks} // ÚJ: Átadjuk a szabadságokat a foglalónak!
       userId={user?.id}
       userName={dbUser?.name || undefined}
       userPhone={dbUser?.phone || undefined}
