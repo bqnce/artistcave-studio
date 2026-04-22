@@ -1,162 +1,116 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Store01Icon, 
-  Scissor01Icon, 
-  Image02Icon, 
-  Mail01Icon 
-} from "hugeicons-react";
-
-const navLinks = [
-  { title: "Rólunk", href: "#rolunk", icon: Store01Icon },
-  { title: "Szolgáltatások", href: "#szolgaltatasok", icon: Scissor01Icon },
-  { title: "Munkáink", href: "#munkaink", icon: Image02Icon },
-  { title: "Kapcsolat", href: "#kapcsolat", icon: Mail01Icon },
-];
+import { Menu01Icon, Cancel01Icon, UserCircleIcon } from "hugeicons-react";
+import Link from "next/link";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-  }, [isOpen]);
+  const navLinks = [
+    { name: "Főoldal", href: "/" },
+    { name: "Szolgáltatások", href: "/#szolgaltatasok" },
+    { name: "Rólunk", href: "/#rolunk" },
+    { name: "Kapcsolat", href: "/#kapcsolat" },
+  ];
 
   return (
-    <>
-      <nav
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-          scrolled ? "bg-zinc-950/90 backdrop-blur-md py-4 shadow-sm shadow-black/50" : "bg-transparent py-6"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          
-          {/* Bal oldal: Logo + Per jel + Menüpontok */}
-          <div className="flex items-center gap-6 lg:gap-8">
-            <Link href="/" className="relative z-50 whitespace-nowrap">
-              <span className="text-zinc-100 font-bold tracking-widest uppercase text-lg lg:text-xl">
-                Artist Cave <span className="text-zinc-500 font-light">Studio</span>
-              </span>
-            </Link>
+    <nav
+      className={`fixed w-full z-50 transition-all duration-500 ${
+        scrolled ? "bg-zinc-950/80 backdrop-blur-md py-4 border-b border-zinc-900" : "bg-transparent py-6"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+        <Link href="/" className="text-2xl font-black tracking-tighter text-white">
+          ARTIST<span className="text-violet-500">CAVE</span>
+        </Link>
 
-            {/* Asztali menüpontok a / jellel */}
-            <div className="hidden md:flex items-center gap-6 lg:gap-8">
-              <span className="text-zinc-700 text-2xl font-light hidden md:block">/</span>
-              <ul className="flex gap-6 lg:gap-8 text-sm font-medium text-zinc-300 uppercase tracking-wide">
-                {navLinks.map((link, index) => {
-                  const Icon = link.icon;
-                  return (
-                    <li key={index}>
-                      <Link
-                        href={link.href}
-                        className="flex items-center gap-2 hover:text-white hover:translate-y-[-1px] transition-all duration-200"
-                      >
-                        <Icon size={18} className="text-zinc-500" />
-                        {link.title}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          </div>
-
-          {/* Jobb oldal: CTA Gomb + Mobil Hamburger */}
-          <div className="flex items-center gap-4">
-            {/* Asztali CTA Gomb (Light Purple Gradient) */}
+        {/* Desktop Menu */}
+        <div className="hidden md:flex items-center gap-8">
+          {navLinks.map((link) => (
             <Link
-              href="#foglalas"
-              className="hidden md:block bg-gradient-to-r from-purple-400 to-violet-400 text-white px-6 py-2.5 rounded-sm text-sm font-bold uppercase tracking-wider hover:opacity-90 hover:scale-[1.02] transition-all duration-200 shadow-[0_0_15px_rgba(167,139,250,0.25)]"
+              key={link.name}
+              href={link.href}
+              className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-white transition-colors"
             >
-              Időpontfoglalás
+              {link.name}
             </Link>
+          ))}
+          
+          <div className="h-6 w-px bg-zinc-800 mx-2" />
 
-            {/* Mobil Hamburger Ikon */}
-            <button
-              onClick={() => setIsOpen((prev) => !prev)}
-              className="relative z-50 w-10 h-10 md:hidden flex flex-col justify-center items-end gap-2 focus:outline-none"
-              aria-label="Menü megnyitása"
-            >
-              <motion.span
-                animate={isOpen ? { rotate: 45, y: 5 } : { rotate: 0, y: 0 }}
-                className="block h-[2px] w-7 bg-zinc-100 origin-center transition-all"
-              />
-              <motion.span
-                animate={isOpen ? { rotate: -45, y: -5, width: "1.75rem" } : { rotate: 0, y: 0, width: "1.25rem" }}
-                className="block h-[2px] bg-zinc-100 origin-center transition-all"
-              />
-            </button>
-          </div>
-
+          <Link
+            href="/login"
+            className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-white transition-colors flex items-center gap-2"
+          >
+            Belépés
+          </Link>
+          <Link
+            href="/register"
+            className="bg-violet-600 text-white px-6 py-2.5 rounded-full text-sm font-black uppercase tracking-widest hover:bg-violet-500 transition-all shadow-[0_0_15px_rgba(139,92,246,0.3)]"
+          >
+            Regisztráció
+          </Link>
         </div>
-      </nav>
 
-      {/* Mobil Menü Overlay */}
+        {/* Mobile Toggle */}
+        <button className="md:hidden text-white" onClick={() => setIsOpen(true)}>
+          <Menu01Icon size={28} />
+        </button>
+      </div>
+
+      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: "-100%" }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: "-100%" }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-40 bg-zinc-950 flex flex-col items-center justify-center px-6"
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            className="fixed inset-0 bg-zinc-950 z-[60] flex flex-col p-8"
           >
-            <ul className="flex flex-col items-start gap-8 mb-12 w-full max-w-xs mx-auto">
-              {navLinks.map((link, index) => {
-                const Icon = link.icon;
-                return (
-                  <motion.li
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 + index * 0.1 }}
-                    className="w-full"
-                  >
-                    <Link
-                      href={link.href}
-                      onClick={() => setIsOpen(false)}
-                      className="flex items-center gap-6 text-2xl font-light text-zinc-200 uppercase tracking-widest hover:text-purple-400 transition-colors w-full"
-                    >
-                      <Icon size={28} className="text-zinc-500" />
-                      {link.title}
-                    </Link>
-                  </motion.li>
-                );
-              })}
-            </ul>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-            >
-              {/* Mobil CTA Gomb (Light Purple Gradient) */}
+            <div className="flex justify-end mb-12">
+              <button onClick={() => setIsOpen(false)} className="text-zinc-500">
+                <Cancel01Icon size={32} />
+              </button>
+            </div>
+            <div className="flex flex-col gap-8 items-center">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="text-3xl font-black uppercase tracking-tighter text-white"
+                >
+                  {link.name}
+                </Link>
+              ))}
+              <div className="w-12 h-1 bg-zinc-900 my-4" />
               <Link
-                href="#foglalas"
+                href="/login"
                 onClick={() => setIsOpen(false)}
-                className="bg-gradient-to-r from-purple-400 to-violet-400 text-white px-8 py-4 rounded-sm text-lg font-bold uppercase tracking-wider active:scale-95 transition-transform shadow-[0_0_20px_rgba(167,139,250,0.3)] inline-block"
+                className="text-xl font-bold uppercase tracking-widest text-zinc-400"
               >
-                Időpontfoglalás
+                Belépés
               </Link>
-            </motion.div>
+              <Link
+                href="/register"
+                onClick={() => setIsOpen(false)}
+                className="w-full text-center bg-violet-600 text-white py-4 rounded-2xl text-xl font-black uppercase tracking-widest"
+              >
+                Regisztráció
+              </Link>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </nav>
   );
 }
