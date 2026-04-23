@@ -24,9 +24,9 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed w-full z-50 transition-all duration-500 ${
+      className={`fixed w-full z-50 border-b border-zinc-900 transition-[padding,background-color] duration-500 ${
         scrolled || isOpen
-          ? "bg-zinc-950 py-4 border-b border-zinc-900"
+          ? "bg-zinc-950 py-4"
           : "bg-transparent py-6"
       }`}
     >

@@ -14,7 +14,7 @@ export default function Contact() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-zinc-950 border-t border-zinc-900 pt-20 pb-10 px-6 overflow-hidden relative">
+    <footer id="kapcsolat" className="bg-zinc-950 border-t border-zinc-900 pt-20 pb-10 px-6 overflow-hidden relative">
       {/* Háttér Glow - finom lila derengés */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-violet-500/50 to-transparent shadow-[0_0_20px_rgba(139,92,246,0.3)]" />
 
