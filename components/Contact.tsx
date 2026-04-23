@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { 
   InstagramIcon, 
   Facebook01Icon, 

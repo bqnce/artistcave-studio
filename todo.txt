@@ -1,1 +1,2 @@
 //database - nem jó az időzóna, 2 órával korábbi időpontot jelez a db a foglalás időpontjánál
+zod - input ellenőrzés foglalásnál: email cim es telefonszam ellonerzes. min. x karakter hosszu legyen mindegyik, telefonszamot is ellenorizze le, az email cimet is, hogy a formatum rendben van-e.

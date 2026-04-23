@@ -1,7 +1,4 @@
-"use client";
-
 import Image from "next/image";
-import { motion, Variants } from "framer-motion";
 import aboutImage from "@/public/szalon.webp";
 import caveTexture from "@/public/cave-texture.webp";
 // Hugeicons importálása a 3 értékhez
@@ -10,20 +7,6 @@ import {
     GlassesIcon,
     BrushIcon
 } from "hugeicons-react";
-
-// Animációs variánsok a szekciónak (felfelé úszás)
-const sectionVariants: Variants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            duration: 1,
-            ease: [0.22, 1, 0.36, 1], // Prémium, lassuló animáció
-            staggerChildren: 0.2 // Az értékek egymás után úsznak be
-        },
-    },
-};
 
 // Az értékek listája ikonokkal
 const values = [
@@ -57,6 +40,7 @@ export default function About() {
                     src={caveTexture} // Győződj meg róla, hogy a kép a public mappában van ezen a néven
                     alt="Barlang Belső Textúra"
                     fill
+                    sizes="100vw"
                     className="object-cover opacity-80"
                 />
                 {/* Sötét gradient maszkok, hogy a textúra beleolvadjon az előtte/utána lévő szekcióba */}
@@ -66,13 +50,7 @@ export default function About() {
 
 
             {/* --- ASZIMMETRIKUS TARTALOM (Z-10) --- */}
-            <motion.div
-                className="relative z-10 w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center"
-                variants={sectionVariants}
-                initial="hidden"
-                whileInView="visible" // Csak akkor indul, ha a felhasználó oda görget
-                viewport={{ once: true, amount: 0.3 }} // Csak egyszer fut le, 30%-os láthatóságnál
-            >
+            <div className="relative z-10 w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
 
                 {/* Bal Oldal: Menő Fotó */}
                 <div className="relative aspect-[4/5] overflow-hidden rounded-sm group border border-zinc-900/50">
@@ -80,6 +58,7 @@ export default function About() {
                         src={aboutImage} // Egy ideiglenes, sötét hangulatú Unsplash kép
                         alt="Artist Cave Studio Belső Tér"
                         fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     {/* Sötétoverlay, hogy illeszkedjen a barlanghoz, és lila glow */}
@@ -109,9 +88,8 @@ export default function About() {
                         {values.map((value, index) => {
                             const Icon = value.icon;
                             return (
-                                <motion.li
+                                <li
                                     key={index}
-                                    variants={sectionVariants}
                                     className="group flex items-start gap-6"
                                 >
                                     {/* Ikon: alapból lila és világít, hoverre még fényesebb */}
@@ -135,7 +113,7 @@ export default function About() {
                                             {value.description}
                                         </p>
                                     </div>
-                                </motion.li>
+                                </li>
                             );
                         })}
                     </ul>
@@ -144,7 +122,7 @@ export default function About() {
 
                 </div>
 
-            </motion.div>
+            </div>
 
         </section>
     );
