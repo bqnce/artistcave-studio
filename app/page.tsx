@@ -4,6 +4,7 @@ import Services from '@/components/Services'
 import About from '@/components/About'
 import Booking from '@/components/Booking'
 import Contact from '@/components/Contact'
+import HashScrollHandler from '@/components/HashScrollHandler'
 import { prisma } from '@/lib/prisma'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
@@ -84,6 +85,7 @@ async function BookingDataFetcher() {
 export default function Home() {
   return (
     <main className="min-h-screen bg-zinc-950 selection:bg-purple-500/30 text-zinc-100 font-sans">
+      <HashScrollHandler />
       <Navbar />
 
       {/* A Hero azonnal megjelenik, nem vár a Supabase-re! */}

@@ -81,7 +81,7 @@ export default function BookingsTab({ upcomingBookings, pastBookings, isCancelli
                                </div>
                                <div className="text-lg md:text-xl font-bold text-white mb-1.5 tracking-tight line-clamp-1">{booking.serviceName}</div>
                                <div className="text-zinc-500 text-xs font-medium flex items-center gap-1.5">
-                                  <MapPin size={14} className="text-zinc-600" /> Wesselényi u. 41.
+                                  <MapPin size={14} className="text-zinc-600" /> Egyetem út 1. E/7 mélyföldszint (dohánybolt mellett), Miskolc, Hungary, 3515
                                </div>
                              </div>
                            </div>

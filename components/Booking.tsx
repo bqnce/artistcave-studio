@@ -144,14 +144,18 @@ export default function Booking({ services, occupiedSlots, timeBlocks = [], user
 
     const formData = new FormData();
     formData.append('serviceId', selectedService.id);
-    const pad = (n: number) => String(n).padStart(2, '0')
-    const dateStr = `${selectedDate.getFullYear()}-${pad(selectedDate.getMonth() + 1)}-${pad(selectedDate.getDate())}`
-    formData.append('date', `${dateStr}T${selectedTime}`);
+    const [hours, minutes] = selectedTime.split(':').map(Number);
+    const bookingDate = new Date(selectedDate);
+    bookingDate.setHours(hours, minutes, 0, 0);
+    formData.append('date', bookingDate.toISOString());
 
     // JAVÍTÁS 2: Szigorúan mindig elküldjük a nevet és a telefont az adatbázisnak, függetlenül a státusztól!
     formData.append('guestName', guestName || userName || 'Ismeretlen');
     formData.append('guestPhone', guestPhone || userPhone || '');
     formData.append('guestEmail', guestEmail || userEmail || '');
+    if (userId) {
+      formData.append('userId', userId);
+    }
 
 
     const res = await createBooking(formData);
@@ -172,9 +176,24 @@ export default function Booking({ services, occupiedSlots, timeBlocks = [], user
           </div>
           <h2 className="text-3xl font-black text-white uppercase tracking-tight mb-4">Sikeres Foglalás!</h2>
           <p className="text-zinc-400 mb-8">Várunk szeretettel a megadott időpontban. A részletekről e-mailt küldtünk.</p>
-          <button onClick={() => window.location.reload()} className="bg-zinc-900 text-white px-8 py-3 rounded-xl font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors">
-            Új foglalás leadása
-          </button>
+          <div className="max-w-sm mx-auto flex flex-col items-center gap-3">
+            {userId && (
+              <button
+                onClick={() => router.push("/dashboard")}
+                className="w-full bg-violet-600 text-white px-8 py-3 rounded-xl font-bold uppercase tracking-widest hover:bg-violet-500 transition-colors shadow-[0_8px_30px_rgba(139,92,246,0.35)]"
+              >
+                Foglalás megtekintése
+              </button>
+            )}
+            {userId && (
+              <span className="text-[11px] font-black uppercase tracking-[0.25em] text-zinc-600 py-1">
+                Vagy
+              </span>
+            )}
+            <button onClick={() => window.location.reload()} className="w-full bg-zinc-900 text-white px-8 py-3 rounded-xl font-bold uppercase tracking-widest hover:bg-zinc-800 transition-colors border border-zinc-800">
+              Új foglalás leadása
+            </button>
+          </div>
         </motion.div>
       </section>
     );

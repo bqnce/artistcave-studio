@@ -43,7 +43,7 @@ export default function LoginPage() {
 
     setTimeout(() => {
       router.push('/dashboard')
-    }, 600)
+    }, 10)
   }
 
   return (
