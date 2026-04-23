@@ -1,2 +1,8 @@
 //database - nem jó az időzóna, 2 órával korábbi időpontot jelez a db a foglalás időpontjánál
 zod - input ellenőrzés foglalásnál: email cim es telefonszam ellonerzes. min. x karakter hosszu legyen mindegyik, telefonszamot is ellenorizze le, az email cimet is, hogy a formatum rendben van-e.
+navbar - ha valaki már be van jelentkezve, akkor ne látszódjon a belépés és regisztráció gomb
+navbar - ne section id alapján tekerjen, mert ha lemegyek a #kapcsolatra, feltekerjek majd megint rámegyek, már nem visz le. ugyan ez a többinél is
+cookie - popup / nyilatkozat
+booking - ha be van jelentkezve a felhasználó, akkor az összegzés legyen sokkal menőbb -> irja ki a pontos szolgaltaast, arat, nevet, telefonszamot, emailcimet
+mobil - bookingnal a lila hátterő 3 ikonra kattintva lehessen navigálni a slideok között.
+user dashboard - sidebar alljat kicsit atdesignolni

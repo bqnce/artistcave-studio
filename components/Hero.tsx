@@ -55,7 +55,7 @@ export default function Hero() {
 
       {/* --- GÖRGETÉS JELZŐ (Scroll Indicator) --- */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 text-zinc-600 flex flex-col items-center gap-2">
-        <span className="text-xs uppercase tracking-widest font-light">Görgess le</span>
+        <span className="text-xs uppercase tracking-widest font-light">Tudj meg többet!</span>
         <div className="animate-bounce">
           <Mouse01Icon size={24} strokeWidth={1} />
         </div>
